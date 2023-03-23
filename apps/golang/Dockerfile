@@ -1,17 +1,18 @@
-FROM golang:1.20-alpine
-
+FROM golang:1.20-alpine AS build
 WORKDIR /app
-
-COPY app/go.mod ./
-COPY app/go.sum ./
+COPY go.mod ./
+COPY go.sum ./
 RUN go mod download
+COPY ./ ./
+RUN go build -o main
 
-COPY app/ ./
-# Override the config with docker endpoints
-COPY app/config-docker.yaml ./config.yaml
+FROM golang:1.20-alpine 
+WORKDIR /app
+RUN apk add ca-certificates
+COPY --from=build /app/main ./
+COPY config.yml ./
+RUN ls
 
-RUN go build -o router
 
 EXPOSE 8080
-
-CMD [ "./router" ]
+CMD [ "./main" ]

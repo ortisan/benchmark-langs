@@ -33,4 +33,4 @@ terraform init
 terraform destroy --auto-approve
 terraform apply --auto-approve
 
-k6 run go-get.js
+k6 run golang-ping-get.js

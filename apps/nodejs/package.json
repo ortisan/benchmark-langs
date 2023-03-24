@@ -1,0 +1,20 @@
+{
+  "name": "nodejs",
+  "version": "1.0.0",
+  "description": "Nodejs app",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "type": "commonjs",
+  "keywords": [
+    "benchmark"
+  ],
+  "author": "Marcelo",
+  "license": "ISC",
+  "dependencies": {
+    "@opentelemetry/instrumentation-fastify": "^0.31.1",
+    "@opentelemetry/instrumentation-http": "^0.36.1",
+    "fastify": "^4.15.0"
+  }
+}

@@ -1,0 +1,54 @@
+version: '3'
+
+services:
+  prometheus:
+    image: prom/prometheus:latest
+    ports:
+      - 9090:9090
+    volumes:
+      - "./prometheus.yaml:/etc/prometheus/prometheus.yaml"
+  grafana:
+    image: grafana/grafana:latest
+    user: 1000:1000
+    ports:
+      - 3000:3000
+    volumes:
+      - "./docker/volumes/grafana:/var/lib/grafana:rw"
+
+  golang-app:
+    build: apps/golang
+    ports:
+      - 8080:8080
+    deploy:
+      resources:
+        reservations:
+          cpus: '0.5'
+          memory: '512M'
+        limits:
+          cpus: '1'
+          memory: '1024M'
+    restart: on-failure
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/healthcheck"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  nodejs-app:
+    build: apps/nodejs
+    ports:
+      - 8081:8080
+    deploy:
+      resources:
+        reservations:
+          cpus: '0.5'
+          memory: '512M'
+        limits:
+          cpus: '1'
+          memory: '1024M'
+    restart: on-failure
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8081/healthcheck"]
+      interval: 30s
+      timeout: 10s
+      retries: 5

@@ -11,8 +11,6 @@ WORKDIR /app
 RUN apk add ca-certificates
 COPY --from=build /app/main ./
 COPY config.yml ./
-RUN ls
-
 
 EXPOSE 8080
 CMD [ "./main" ]

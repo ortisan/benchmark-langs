@@ -12,7 +12,7 @@ export const options = {
   scenarios: {
     constant_request_rate: {
       executor: 'constant-arrival-rate',
-      rate: 1000,
+      rate: 200,
       timeUnit: '1s', // 1000 iterations per second, i.e. 1000 RPS
       duration: '30s',
       preAllocatedVUs: 100, // how large the initial pool of VUs would be
@@ -29,8 +29,8 @@ export default function () {
     },
   };
 
-  let res = http.get("http://localhost:8081/ping", params);
-  // console.log(JSON.stringify(res))
-  //check(res, { 'status was 200': (r) => r.status == 200 });
-  //sleep(1);
+  let res = http.get("http://localhost:8080/ping", params);
+  // // console.log(JSON.stringify(res))
+  // check(res, { 'status was 200': (r) => r.status == 200 });
+  // sleep(1);
 }

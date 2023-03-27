@@ -6,7 +6,7 @@ services:
     ports:
       - 9090:9090
     volumes:
-      - "./prometheus.yaml:/etc/prometheus/prometheus.yaml"
+      - "./prometheus.yml:/etc/prometheus/prometheus.yml"
   grafana:
     image: grafana/grafana:latest
     user: 1000:1000

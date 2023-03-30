@@ -1,4 +1,6 @@
 import http from 'k6/http';
+import { sleep, check } from 'k6';
+import { Counter } from 'k6/metrics';
 
 // export let options = {
 //   stages: [
@@ -12,9 +14,9 @@ export const options = {
   scenarios: {
     constant_request_rate: {
       executor: 'constant-arrival-rate',
-      rate: 200,
+      rate: 500,
       timeUnit: '1s', // 1000 iterations per second, i.e. 1000 RPS
-      duration: '30s',
+      duration: '5m',
       preAllocatedVUs: 100, // how large the initial pool of VUs would be
       maxVUs: 200, // if the preAllocatedVUs are not enough, we can initialize more
     },
@@ -29,8 +31,11 @@ export default function () {
     },
   };
 
+
   let res = http.get("http://localhost:8080/ping", params);
+
+  sleep(1);
+
   // // console.log(JSON.stringify(res))
-  // check(res, { 'status was 200': (r) => r.status == 200 });
-  // sleep(1);
+  check(res, { 'status was 200': (r) => r.status == 200 });
 }

@@ -1,7 +1,10 @@
 const Fastify = require('fastify');
-const { registerInstrumentations } = require('@opentelemetry/instrumentation');
-const { HttpInstrumentation } = require('@opentelemetry/instrumentation-http');
-const { FastifyInstrumentation } = require('@opentelemetry/instrumentation-fastify');
+const otelSDK = require('./tracing');
+const client = require('prom-client');
+const collectDefaultMetrics = client.collectDefaultMetrics;
+const Registry = client.Registry;
+const register = new Registry();
+collectDefaultMetrics({ register });
 
 
 const stocks = {
@@ -12,17 +15,13 @@ const stocks = {
   "PRIO3.SA": "https://query1.finance.yahoo.com/v7/finance/quote?symbols=PRIO3.SA&fields=exchangeTimezoneName,exchangeTimezoneShortName,regularMarketTime&region=US&lang=en-US",
 }
 
+
+// Start SDK before nestjs factory create
+otelSDK.start();
+
 const fastify = Fastify({
   logger: true
 })
-
-registerInstrumentations({
-  instrumentations: [
-    // Fastify instrumentation expects HTTP layer to be instrumented
-    new HttpInstrumentation(),
-    new FastifyInstrumentation(),
-  ],
-});
 
 fastify.get('/ping', function (request, reply) {
   reply.send({ message: 'pong' })
@@ -41,6 +40,17 @@ fastify.get('/healthcheck', function (request, reply) {
   reply.send({ status: 'up' })
 })
 
+fastify.get('/metrics', async (req, reply) => {
+  try {
+    reply.header('Content-Type', register.contentType);
+    let metrics = await register.metrics()
+    reply.send(metrics);
+  } catch (ex) {
+    reply.statusCode = 500
+    reply.send(ex);
+  }
+});
+
 fastify.listen({ port: 8081, host: '0.0.0.0' }, function (err, address) {
   if (err) {
     fastify.log.error(err)
@@ -48,3 +58,4 @@ fastify.listen({ port: 8081, host: '0.0.0.0' }, function (err, address) {
   }
   // Server is now listening on ${address}
 })
+

@@ -13,8 +13,14 @@
   "author": "Marcelo",
   "license": "ISC",
   "dependencies": {
+    "@opentelemetry/auto-instrumentations-node": "^0.36.4",
+    "@opentelemetry/exporter-collector": "^0.25.0",
+    "@opentelemetry/exporter-prometheus": "^0.36.1",
     "@opentelemetry/instrumentation-fastify": "^0.31.1",
     "@opentelemetry/instrumentation-http": "^0.36.1",
-    "fastify": "^4.15.0"
+    "@opentelemetry/sdk-metrics": "^1.10.1",
+    "@opentelemetry/sdk-node": "^0.36.1",
+    "fastify": "^4.15.0",
+    "prom-client": "^14.2.0"
   }
 }

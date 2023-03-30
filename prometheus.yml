@@ -15,4 +15,4 @@ scrape_configs:
     scrape_interval: 5s
     metrics_path: "/metrics"
     static_configs:
-      - targets: ["nodejs-app:8080"] # Golang app
+      - targets: ["nodejs-app:8081"] # Nodejs app

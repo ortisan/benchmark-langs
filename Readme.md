@@ -4,7 +4,6 @@ POC para comparação de performance e consumo de recursos entre:
 
 1. Golang X Nodejs em container
 2. Golang X Nodejs em lambda
-3. Arquitetura de lambda Arm X X66
 
 ## Grafana Dashboards
 
@@ -306,6 +305,8 @@ Golang
     }
 ]
 ```
+
+Nodejs
 
 ```json
 [

@@ -9,10 +9,10 @@ collectDefaultMetrics({ register });
 
 const stocks = {
   "ITSA4.SA": "https://query1.finance.yahoo.com/v7/finance/quote?symbols=ITSA4.SA&fields=exchangeTimezoneName,exchangeTimezoneShortName,regularMarketTime&region=US&lang=en-US",
-  "PETR4.SA": "https://query1.finance.yahoo.com/v7/finance/quote?symbols=PETR4.SA&fields=exchangeTimezoneName,exchangeTimezoneShortName,regularMarketTime&region=US&lang=en-US",
-  "MGLU3.SA": "https://query1.finance.yahoo.com/v7/finance/quote?symbols=MGLU3.SA&fields=exchangeTimezoneName,exchangeTimezoneShortName,regularMarketTime&region=US&lang=en-US",
-  "VALE3.SA": "https://query1.finance.yahoo.com/v7/finance/quote?symbols=VALE3.SA&fields=exchangeTimezoneName,exchangeTimezoneShortName,regularMarketTime&region=US&lang=en-US",
-  "PRIO3.SA": "https://query1.finance.yahoo.com/v7/finance/quote?symbols=PRIO3.SA&fields=exchangeTimezoneName,exchangeTimezoneShortName,regularMarketTime&region=US&lang=en-US",
+  // "PETR4.SA": "https://query1.finance.yahoo.com/v7/finance/quote?symbols=PETR4.SA&fields=exchangeTimezoneName,exchangeTimezoneShortName,regularMarketTime&region=US&lang=en-US",
+  // "MGLU3.SA": "https://query1.finance.yahoo.com/v7/finance/quote?symbols=MGLU3.SA&fields=exchangeTimezoneName,exchangeTimezoneShortName,regularMarketTime&region=US&lang=en-US",
+  // "VALE3.SA": "https://query1.finance.yahoo.com/v7/finance/quote?symbols=VALE3.SA&fields=exchangeTimezoneName,exchangeTimezoneShortName,regularMarketTime&region=US&lang=en-US",
+  // "PRIO3.SA": "https://query1.finance.yahoo.com/v7/finance/quote?symbols=PRIO3.SA&fields=exchangeTimezoneName,exchangeTimezoneShortName,regularMarketTime&region=US&lang=en-US",
 }
 
 
@@ -33,7 +33,7 @@ fastify.get('/stocks', async function (request, reply) {
     return await res.json();
   });
   const stocksResponses = await Promise.all(mapStocksPromises);
-  reply.send({ stockdatas: stocksResponses })
+  reply.send({ stocksDetails: stocksResponses })
 })
 
 fastify.get('/healthcheck', function (request, reply) {

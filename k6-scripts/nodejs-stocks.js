@@ -32,7 +32,7 @@ export default function () {
   };
 
 
-  let res = http.get("http://localhost:8080/ping", params);
+  let res = http.get("http://localhost:8080/stocks", params);
 
   sleep(1);
 

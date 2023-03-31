@@ -10,55 +10,46 @@ import (
 
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
-	rxgo "github.com/reactivex/rxgo/v2"
 	log "github.com/sirupsen/logrus"
 )
 
-type stockUrl struct {
-	code string
-	url  string
+type StockUrl struct {
+	Code string
+	Url  string
 }
 
-var stocks = []*stockUrl{
-	&stockUrl{code: "ITSA4.SA", url: "https://query1.finance.yahoo.com/v7/finance/quote?symbols=ITSA4.SA&fields=exchangeTimezoneName,exchangeTimezoneShortName,regularMarketTime&region=US&lang=en-US"},
-	&stockUrl{code: "PETR4.SA", url: "https://query1.finance.yahoo.com/v7/finance/quote?symbols=PETR4.SA&fields=exchangeTimezoneName,exchangeTimezoneShortName,regularMarketTime&region=US&lang=en-US"},
-	&stockUrl{code: "MGLU3.SA", url: "https://query1.finance.yahoo.com/v7/finance/quote?symbols=MGLU3.SA&fields=exchangeTimezoneName,exchangeTimezoneShortName,regularMarketTime&region=US&lang=en-US"},
-	&stockUrl{code: "VALE3.SA", url: "https://query1.finance.yahoo.com/v7/finance/quote?symbols=VALE3.SA&fields=exchangeTimezoneName,exchangeTimezoneShortName,regularMarketTime&region=US&lang=en-US"},
-	&stockUrl{code: "PRIO3.SA", url: "https://query1.finance.yahoo.com/v7/finance/quote?symbols=PRIO3.SA&fields=exchangeTimezoneName,exchangeTimezoneShortName,regularMarketTime&region=US&lang=en-US"},
+type StockDetails struct {
+	Details interface{} `json:"details"`
+	Err     error       `json:"error"`
 }
 
-type stockDetails struct {
-	details interface{} `json:"details"`
-	err     error       `json:"error"`
+type ReturnEvent struct {
+	StocksDetails []StockDetails `json:"stocksDetails"`
 }
 
-type returnEvent struct {
-	stocksDetails []stockDetails `json:"stocksDetails"`
+var stocks = []StockUrl{
+	StockUrl{Code: "ITSA4.SA", Url: "https://query1.finance.yahoo.com/v7/finance/quote?symbols=ITSA4.SA&fields=exchangeTimezoneName,exchangeTimezoneShortName,regularMarketTime&region=US&lang=en-US"},
+	// stockUrl{code: "PETR4.SA", url: "https://query1.finance.yahoo.com/v7/finance/quote?symbols=PETR4.SA&fields=exchangeTimezoneName,exchangeTimezoneShortName,regularMarketTime&region=US&lang=en-US"},
+	// stockUrl{code: "MGLU3.SA", url: "https://query1.finance.yahoo.com/v7/finance/quote?symbols=MGLU3.SA&fields=exchangeTimezoneName,exchangeTimezoneShortName,regularMarketTime&region=US&lang=en-US"},
+	// stockUrl{code: "VALE3.SA", url: "https://query1.finance.yahoo.com/v7/finance/quote?symbols=VALE3.SA&fields=exchangeTimezoneName,exchangeTimezoneShortName,regularMarketTime&region=US&lang=en-US"},
+	// stockUrl{code: "PRIO3.SA", url: "https://query1.finance.yahoo.com/v7/finance/quote?symbols=PRIO3.SA&fields=exchangeTimezoneName,exchangeTimezoneShortName,regularMarketTime&region=US&lang=en-US"},
 }
 
 func HandleRequest(ctx context.Context, event events.LambdaFunctionURLRequest) (events.LambdaFunctionURLResponse, error) {
 
-	observable := rxgo.Just(stocks)()
-	observable.Map(func(_ context.Context, item interface{}) (interface{}, error) {
-		su := item.(stockUrl)
-		details, err := fetchUrl(su.url)
-		if err != nil {
-			return &stockDetails{err: err}, nil
-		}
-		return &stockDetails{details: details}, nil
-	},
-		rxgo.WithPool(5),
-	)
-
-	var stocksDetails []stockDetails
-	for detailItem := range observable.Observe() {
-		stocksDetails = append(stocksDetails, stockDetails{details: detailItem.V, err: detailItem.E})
+	details, err := fetchUrl(stocks[0].Url)
+	var stockDetails *StockDetails
+	code := 200
+	if err != nil {
+		code = 500
+		stockDetails = &StockDetails{Err: err}
+	} else {
+		stockDetails = &StockDetails{Details: details}
 	}
 
 	headers := map[string]string{"Access-Control-Allow-Origin": "*", "Access-Control-Allow-Headers": "Origin, X-Requested-With, Content-Type, Accept"}
 
-	code := 200
-	response, err := json.Marshal(returnEvent{stocksDetails: stocksDetails})
+	response, err := json.Marshal(stockDetails)
 	if err != nil {
 		log.WithFields(log.Fields{
 			"error": err,
@@ -68,10 +59,6 @@ func HandleRequest(ctx context.Context, event events.LambdaFunctionURLRequest) (
 	}
 
 	return events.LambdaFunctionURLResponse{StatusCode: code, Headers: headers, Body: string(response), IsBase64Encoded: false}, nil
-}
-
-func main() {
-	lambda.Start(HandleRequest)
 }
 
 func fetchUrl(url string) (interface{}, error) {
@@ -116,4 +103,8 @@ func fetchUrl(url string) (interface{}, error) {
 	}
 
 	return result, nil
+}
+
+func main() {
+	lambda.Start(HandleRequest)
 }

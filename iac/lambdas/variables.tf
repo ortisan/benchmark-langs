@@ -3,9 +3,9 @@ variable "region" {
 }
 
 variable "golang_lambda_image" {
-  default = "779882487479.dkr.ecr.us-east-1.amazonaws.com/golang-lambda:2"
+  default = "779882487479.dkr.ecr.us-east-1.amazonaws.com/golang-app:latest"
 }
 
-variable "js_lambda_image" {
-  default = "779882487479.dkr.ecr.us-east-1.amazonaws.com/js-lambda:8"
+variable "nodejs_lambda_image" {
+  default = "779882487479.dkr.ecr.us-east-1.amazonaws.com/nodejs-app:latest"
 }

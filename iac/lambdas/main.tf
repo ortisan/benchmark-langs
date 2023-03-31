@@ -14,12 +14,12 @@ module "golang-lambda" {
   create_lambda_function_url = true
 }
 
-module "js_lambda" {
+module "nodejs_lambda" {
   source                     = "terraform-aws-modules/lambda/aws"
-  function_name              = "js-lambda"
-  description                = "Benchmark js lambda"
+  function_name              = "nodejs-lambda"
+  description                = "Benchmark nodejste lambda"
   create_package             = false
-  image_uri                  = var.js_lambda_image
+  image_uri                  = var.nodejs_lambda_image
   package_type               = "Image"
   create_lambda_function_url = true
 }

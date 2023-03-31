@@ -14,7 +14,7 @@ export const options = {
   scenarios: {
     constant_request_rate: {
       executor: 'constant-arrival-rate',
-      rate: 500,
+      rate: 100,
       timeUnit: '1s', // 1000 iterations per second, i.e. 1000 RPS
       duration: '5m',
       preAllocatedVUs: 100, // how large the initial pool of VUs would be
@@ -32,7 +32,7 @@ export default function () {
   };
 
 
-  let res = http.get("http://localhost:8080/ping", params);
+  let res = http.get("https://oaq7euoio7azju4pp22o7n2bta0refuf.lambda-url.us-east-1.on.aws", params);
 
   sleep(1);
 
